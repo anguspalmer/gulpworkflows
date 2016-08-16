@@ -3,5 +3,13 @@
   "version": "0.0.1",
   "description": "Gulp and Browersify Workflow Cource on Lynda.com",
   "author": "Angus Palmer",
-  "license": "MIT"
+  "license": "MIT",
+  "repository":  {
+  	"type" : "git",
+    "url" : "https://github.com/anguspalmer/gulpworkflows.git"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-util": "^3.0.7"
+  }
 }
