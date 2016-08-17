@@ -7,6 +7,25 @@ var gulp = require('gulp'),
 	cleanDest = require('gulp-clean-dest'),
 	concat = require('gulp-concat');
 
+var env,
+	coffeeSources,
+	jsSources,
+	jsonSources,
+	sassSources,
+	htmlSources,
+	sassStyle,
+	outputDir;
+
+env = process.env.NODE_ENV || 'development';
+
+if (env === 'development') {
+	outputDir = 'builds/development/';
+	sassStyle = 'expanded';
+}else{
+	outputDir = 'builds/production/';
+	sassStyle = 'compressed';
+}
+
 var coffeeSources = ['components/coffee/tagline.coffee'];
 var jsSources = [
 	'components/scripts/rclick.js',
@@ -17,9 +36,11 @@ var jsSources = [
 
 var sassSources = ['components/sass/style.scss'];
 
-var htmlSources = ['builds/development/*.html'];
+var htmlSources = [outputDir + '*.html'];
 
-var jsonSources = ['builds/development/js/*.json'];
+var jsonSources = [outputDir + 'js/*.json'];
+
+
 
 gulp.task('coffee', function() {
 	gulp.src(coffeeSources)
@@ -32,7 +53,7 @@ gulp.task('js', function(){
 	gulp.src(jsSources)
 		.pipe(concat('script.js'))
 		.pipe(browserify())
-		.pipe(gulp.dest('builds/development/js'))
+		.pipe(gulp.dest(outputDir + 'js'))
 		.pipe(connect.reload())
 });
 
@@ -40,13 +61,13 @@ gulp.task('sass', function(){
 	gulp.src(sassSources)
 		.pipe(compass({
 			sass: 'components/sass', 
-			image: '_builds/development/images',
-			style: 'expanded',
+			image: outputDir + 'images',
+			style: sassStyle,
 			comments: true,
 			sourcemap: true
 		}))
 		.on('error',gutil.log)
-		.pipe(gulp.dest('builds/development/css'))
+		.pipe(gulp.dest(outputDir + 'css'))
 		.pipe(cleanDest('css'))
 		.pipe(connect.reload())
 });
@@ -61,7 +82,7 @@ gulp.task('watch', function(){
 
 gulp.task('connect', function(){
 	connect.server({
-		root : 'builds/development/',
+		root : outputDir,
 		livereload : true
 	});
 });
