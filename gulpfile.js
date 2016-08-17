@@ -33,12 +33,15 @@ gulp.task('js', function(){
 gulp.task('sass', function(){
 	gulp.src(sassSources)
 		.pipe(compass({
-			sass: 'components/sass',
+			sass: 'components/sass', 
 			image: '_builds/development/images',
 			style: 'expanded',
-			comments: true
+			comments: true,
+			sourcemap: true
 		}))
 		.on('error',gutil.log)
 		.pipe(gulp.dest('builds/development/css'))
 		.pipe(cleanDest('css'))
 });
+
+gulp.task('default',['coffee','js','sass']);
