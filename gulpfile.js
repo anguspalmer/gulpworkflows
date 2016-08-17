@@ -4,6 +4,9 @@ var gulp = require('gulp'),
 	browserify = require('gulp-browserify'),
 	compass = require('gulp-compass'),
 	connect = require('gulp-connect'),
+	gulpif = require('gulp-if'),
+	uglify = require('gulp-uglify'),
+	minifyHTML = require('gulp-minify-html'),
 	cleanDest = require('gulp-clean-dest'),
 	concat = require('gulp-concat');
 
@@ -35,9 +38,7 @@ var jsSources = [
 ];
 
 var sassSources = ['components/sass/style.scss'];
-
 var htmlSources = [outputDir + '*.html'];
-
 var jsonSources = [outputDir + 'js/*.json'];
 
 
@@ -53,6 +54,7 @@ gulp.task('js', function(){
 	gulp.src(jsSources)
 		.pipe(concat('script.js'))
 		.pipe(browserify())
+		.pipe(gulpif(env==='production',uglify()))
 		.pipe(gulp.dest(outputDir + 'js'))
 		.pipe(connect.reload())
 });
@@ -76,8 +78,8 @@ gulp.task('watch', function(){
 	gulp.watch(coffeeSources,['coffee']);
 	gulp.watch(jsSources,['js']);
 	gulp.watch('components/sass/*.scss',['sass']);
-	gulp.watch(jsonSources,['json']);
-	gulp.watch(htmlSources,['html']);
+	gulp.watch('builds/development/*.json',['json']);
+	gulp.watch('builds/development/*.html',['html']);
 });
 
 gulp.task('connect', function(){
@@ -88,13 +90,17 @@ gulp.task('connect', function(){
 });
 
 gulp.task('html', function(){
-	gulp.src(htmlSources)
-		.pipe(connect.reload())
+	gulp.src('builds/development/*.html')
+		.pipe(gulpif(env === 'production', minifyHTML()))
+		.pipe(gulpif(env === 'production', gulp.dest(outputDir)))
+		.pipe(connect.reload());
 });
 
 gulp.task('json', function(){
-	gulp.src(jsonSources)
-		.pipe(connect.reload())
+	gulp.src('builds/development/*.json')
+		.pipe(gulpif(env === 'production', minifyHTML()))
+		.pipe(gulpif(env === 'production', gulp.dest(outputDir)))
+		.pipe(connect.reload());
 });
 
-gulp.task('default',['coffee','js','sass','json','connect','watch']);
+gulp.task('default',['coffee','js','sass','json','html','connect','watch']);
