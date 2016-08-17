@@ -44,4 +44,10 @@ gulp.task('sass', function(){
 		.pipe(cleanDest('css'))
 });
 
+gulp.task('watch', function(){
+	gulp.watch(coffeeSources,['coffee']);
+	gulp.watch(jsSources,['js']);
+	gulp.watch('components/sass/*.scss',['sass']);
+});
+
 gulp.task('default',['coffee','js','sass']);
