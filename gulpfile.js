@@ -9,6 +9,7 @@ var gulp = require('gulp'),
 	minifyHTML = require('gulp-minify-html'),
 	cleanDest = require('gulp-clean-dest'),
 	imagemin = require('gulp-imagemin'),
+	eslint = require('gulp-eslint'),
 	concat = require('gulp-concat');
 
 var env,
@@ -77,6 +78,7 @@ gulp.task('sass', function(){
 
 gulp.task('watch', function(){
 	gulp.watch(coffeeSources,['coffee']);
+	gulp.watch(jsSources,['lint']);
 	gulp.watch(jsSources,['js']);
 	gulp.watch('components/sass/*.scss',['sass']);
 	gulp.watch('builds/development/js/*.json',['json']);
@@ -115,5 +117,18 @@ gulp.task('images', function(){
 		.pipe(connect.reload());
 });
 
+gulp.task('lint', function(){
+	gulp.src(jsSources)
+		.pipe(eslint({
+			'extends': 'eslint:all',
+			'rules':{
+        		'semi': [1, 'always'],
+        		'no-unused-vars': [1, 'local']
+    		}
+		}))
+		.pipe(eslint.format())
+		.pipe(eslint.failOnError());
+});
 
-gulp.task('default',['coffee','js','sass','images','json','html','connect','watch']);
+
+gulp.task('default',['coffee','lint','js','sass','images','json','html','connect','watch']);
