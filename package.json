@@ -17,10 +17,12 @@
     "gulp-concat": "^2.6.0",
     "gulp-connect": "^5.0.0",
     "gulp-if": "^2.0.1",
+    "gulp-imagemin": "^3.0.3",
     "gulp-jsonminify": "^1.0.0",
     "gulp-minify-html": "^1.0.6",
     "gulp-uglify": "^2.0.0",
     "gulp-util": "^3.0.7",
+    "image-min": "^0.3.2",
     "jquery": "^3.1.0",
     "mustache": "^2.2.1"
   }
